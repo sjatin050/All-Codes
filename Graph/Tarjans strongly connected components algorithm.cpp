@@ -20,7 +20,7 @@ void DFS(int u,vector<int>& disc,vector<int>& low,stack<int>& mystack,vector<boo
 		if(disc[v]==-1)	//If v is not visited
 		{
 			DFS(v,disc,low,mystack,presentInStack);
-			low[u] = min(low[u],low[v]);
+			low[u] = min(low[u],low[v]); // while simple backtracking do this
 		}
 		//Differentiate back-edge and cross-edge
 		else if(presentInStack[v])	//Back-edge case
@@ -29,6 +29,7 @@ void DFS(int u,vector<int>& disc,vector<int>& low,stack<int>& mystack,vector<boo
 
 	if(low[u]==disc[u])	//If u is head node of SCC
 	{
+		// pop the values from stack until you find u
 		cout<<"SCC is: ";
 		while(mystack.top()!=u)
 		{
