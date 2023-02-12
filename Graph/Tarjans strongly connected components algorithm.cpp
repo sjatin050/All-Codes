@@ -1,3 +1,5 @@
+// code by Youtube : Tech Dose
+
 #include<bits/stdc++.h>
 using namespace std;
 #define V 7
