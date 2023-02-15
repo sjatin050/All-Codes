@@ -1,23 +1,15 @@
-/* Node is as follows:
-
+/* The structure of the Node is
 struct Node
 {
-	int data, height;
-	Node *left, *right;
-	Node(int x)
-	{
-		data = x;
-		height = 1;
-		left = right = NULL;
-	}
+    int data;
+    Node *left;
+    Node *right;
+    int height;
 };
-
 */
 
 Node* right_rotate(Node* node)
 {
-    if(node==NULL)
-    return NULL;
     Node*a=node,*b=node->left;
     
     a->left=b->right;
@@ -28,9 +20,7 @@ Node* right_rotate(Node* node)
     return b;
 }
 
-Node* left_rotate(Node* node)
-{
-    if(node==NULL)return NULL;
+Node* left_rotate(Node* node){
     Node*a=node,*b=node->right;
     
     a->right=b->left;
@@ -41,91 +31,49 @@ Node* left_rotate(Node* node)
     b->height=1+max(b->left?b->left->height:0,b->right?b->right->height:0);
     return b;
 }
-
-Node* min_element(Node* root)
-{
-    while(root->left)
-    root=root->left;
-    return root;
-}
-
-int getBalance(Node* root)
-{
-    int l=(root->left?root->left->height:0);
-    int r=(root->right?root->right->height:0);
-    
-    return l-r;
-}
-
-Node* deleteNode(Node* root, int data)
-{
-    //add code here,
-    if(root==NULL)
-    return NULL;
-     
-    if(data>(root->data))
-    root->right=deleteNode(root->right,data);
-    else if(data<(root->data))
-    root->left=deleteNode(root->left,data);
-    else
+class Solution{
+  public:
+    /*You are required to complete this method */
+    Node* insertToAVL(Node* node, int data)
     {
-        // if node is leaf
-        if(root->left==NULL and root->right==NULL)
+        //Your code here
+        if(node==NULL)
+        return new Node(data);
+        int x=node->data;
+        
+        if(data>x) 
+        node->right=insertToAVL(node->right,data);
+        else if(data<x) 
+        node->left=insertToAVL(node->left,data);
+        // else 
+        // return node;
+        
+        int l=(node->left?node->left->height:0);
+        int r=(node->right?node->right->height:0);
+        
+        node->height=1+max(l,r);
+        
+        int balance=l-r;
+        
+        if(balance>1 and data<(node->left->data)) // LL rotation
         {
-            root=NULL;
-        }// if node has only one child
-        else if(root->left==NULL or root->right==NULL)
-        {
-            if(root->left)
-            {
-                // it copies full node directly 
-                *root=*(root->left);
-            }
-            else 
-            {
-                // it copies full node directly 
-                *root=*(root->right);
-            }
+            node = right_rotate(node);
         }
-        else // if node has both child then copy inorder successor
+        else if(balance>1 and data>(node->left->data)) // LR rotation
         {
-            Node* temp=min_element(root->right);
-            root->data=temp->data;
-            root->right=deleteNode(root->right,temp->data);
+            node->left=left_rotate(node->left); // L rotation
+            node = right_rotate(node);// R rotation
         }
+        else if(balance<-1 and data>(node->right->data))// RR rotation
+        {
+            node = left_rotate(node);// L rotation
+        }
+        else if(balance<-1 and data<(node->right->data)) // RL rotation
+        {
+            node->right=right_rotate(node->right);// R rotation
+            node = left_rotate(node); // L rotation
+        }
+        
+        return node;
     }
-    // if while deleting node becomes NULL then return it
-    if(root==NULL)
-    return NULL;
-    
-    // correcting the height
-    int l=(root->left?root->left->height:0);
-    int r=(root->right?root->right->height:0);
-    
-    root->height=1+max(l,r);
-    
-    int balance=l-r;
-    // getimbalence is used to know in which direction to rotate
-    // balance will tell whether left subtree height is more or right subtree height is more
-    // and imbalance tells in left or right subtree ..next which direction to take i.e. left or right
-    if(balance>1 and getBalance(root->left)>=0) //LL --> L is get from imbalance and L is get from getimbalence
-    {
-        root = right_rotate(root);
-    }
-    else if(balance>1 and getBalance(root->left)<0)//LR --> L is get from imbalance and R is get from getimbalence
-    {
-        root->left=left_rotate(root->left);
-        root = right_rotate(root);
-    }
-    else if(balance<-1 and getBalance(root->right)<=0)//RR --> R is get from imbalance and R is get from getimbalence
-    {
-        root = left_rotate(root);
-    }
-    else if(balance<-1 and getBalance(root->right)>0)//RL --> R is get from imbalance and L is get from getimbalence
-    {
-        root->right=right_rotate(root->right);
-        root = left_rotate(root);
-    }
-    
-    return root;
-}
+};
