@@ -40,7 +40,10 @@ class Btree{
               void BottomView(Node *,int);
               int InfectTree(Node *,int leaf,int &dis);
 };
-int Btree::InfectTree(Node *head,int leaf,int &dis)
+
+// if we burn a leaf then how much time will it take to burn the whole tree
+int Btree::InfectTree(Node *head,int leaf,int &dis)   // the function is returning the height of the tree from current node 
+                                                       // dis = tells from where the infection is coming 
 {
        if(head==NULL)
               return 0;
