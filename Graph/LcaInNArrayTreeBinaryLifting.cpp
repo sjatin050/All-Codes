@@ -20,15 +20,19 @@ void dfs(int node,int par)
 // takes O(NlogN) time
 void init()
 {
-    dfs(1,-1);
-    for(int j=1;j<=maxN;j++)
+    dfs(1,-1); // first find the 1st parent of each node using dfs call
+    // now for every node find its 2nd , 3rd and so on parent using previous found values 
+    for(int j=1;j<=maxN;j++)  // maxN = log2(N)
     {
         for(int i=1;i<=N;i++)
         {
             if(LCA[i][j-1]!=-1)
             {
-                int par=LCA[i][j-1];
-                LCA[i][j]=LCA[par][j-1];
+                // Suppose if we need to find a node's 8th parent
+                // then for this parent find its 
+                int par=LCA[i][j-1]; // first find its 4th parent
+                LCA[i][j]=LCA[par][j-1]; // then for above parent find its 4th parent 
+                // now u will see u are on 8th parent of current node
             }
         }
     }
@@ -53,10 +57,17 @@ int LCA(int a,int b)
     return a;
     
     // if both of them are in diff subtree
-    while(LCA[a][0]!=LCA[b][0])
-    {
-        a=LCA[a][0];
-        b=LCA[b][0];
+    for(int i=maxN;i>=0;i--){
+        if(LCA[a][i]!=-1 && (LCA[a][i]!=LCA[b][i]) ){
+            a = LCA[a][i];
+            b = LCA[b][i];
+        }
     }
-    return LCA[a][0];
+    // while(LCA[a][0]!=LCA[b][0])
+    // {
+    //     a=LCA[a][0];
+    //     b=LCA[b][0];
+    // }
+    return LCA[a][0]; // return 1st parent of a
 }
+
